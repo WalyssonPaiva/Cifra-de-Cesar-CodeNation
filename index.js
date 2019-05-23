@@ -7,7 +7,7 @@ const request = require('request')
 
 const pathJson = path.resolve(__dirname, 'answer.json')
 
-axios.get('https://api.codenation.dev/v1/challenge/dev-ps/generate-data?token=1138f7c271366dfb6772cd6984bc9add249108b3')
+axios.get('https://api.codenation.dev/v1/challenge/dev-ps/generate-data?token=#########################')
     .then(function(response){     
         criaArquivo(response.data) 
     })
@@ -70,7 +70,7 @@ const sendDesafio = async () => {
     'Content-Type': 'multipart/form-data'
   }
   const r = request.post(
-    { url: 'https://api.codenation.dev/v1/challenge/dev-ps/submit-solution?token=1138f7c271366dfb6772cd6984bc9add249108b3', headers },
+    { url: 'https://api.codenation.dev/v1/challenge/dev-ps/submit-solution?token=####################', headers },
     function optionalCallback (err, httpResponse, body) {
       if (err) {
         return console.error('upload failed:', err)

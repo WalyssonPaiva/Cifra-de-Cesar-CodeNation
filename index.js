@@ -2,6 +2,10 @@ const axios = require('axios');
 const fs = require('fs')
 var sha1 = require('sha1');
 var FormData = require('form-data');
+const path = require('path')
+const request = require('request')
+
+const pathJson = path.resolve(__dirname, 'answer.json')
 
 axios.get('https://api.codenation.dev/v1/challenge/dev-ps/generate-data?token=1138f7c271366dfb6772cd6984bc9add249108b3')
     .then(function(response){     
@@ -12,7 +16,7 @@ axios.get('https://api.codenation.dev/v1/challenge/dev-ps/generate-data?token=11
     });
 
 function criaArquivo(response){
-    fs.writeFile(__dirname +'/answer.json', JSON.stringify(response),
+    fs.writeFile(pathJson, JSON.stringify(response),
     erro =>{
         console.log(erro || 'arquivo salvo')
         descriptografar(response);
@@ -22,7 +26,7 @@ function descriptografar(response){
         texto = response.cifrado.toLowerCase();
         casas = response.numero_casas;
         resultado = texto.split("");
-        chave = sha1(texto);
+        
         textoOk = "";
         var alfa = ["a","b","c","d","e","f","g","h"
 ,"i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"];
@@ -46,29 +50,38 @@ function descriptografar(response){
             }
             textoOk+=element;      
         });
+        
         response.decifrado = textoOk;
+        chave = sha1(response.decifrado);
         response.resumo_criptografico = chave;
         console.log(textoOk);
        // criando o arquivo descriptografado
-       fs.writeFile(__dirname +'/answer.json', JSON.stringify(response),
+       fs.writeFile(pathJson, JSON.stringify(response),
     erro =>{
         console.log(erro || 'arquivo salvo')
        // enviarArquivo()
     })
         
-        enviarArquivo();
         
     }
-    function enviarArquivo(){
-        let formData = new FormData();
-        // const answerFile = fs.readFileSync('answer.json');
-        const answerFile = fs.createReadStream('answer.json')
-        formData.append("answer", answerFile);
-        axios.post('https://api.codenation.dev/v1/challenge/dev-ps/submit-solution?token=1138f7c271366dfb6772cd6984bc9add249108b3', formData, {
-            headers: {
-              'Content-Type': 'multipart/form-data'
-            }
-        })
-        .then( ret => {console.log(ret)} )
-        .catch(error => {console.log(error.response)});
+
+const sendDesafio = async () => {
+  const headers = {
+    'Content-Type': 'multipart/form-data'
+  }
+  const r = request.post(
+    { url: 'https://api.codenation.dev/v1/challenge/dev-ps/submit-solution?token=1138f7c271366dfb6772cd6984bc9add249108b3', headers },
+    function optionalCallback (err, httpResponse, body) {
+      if (err) {
+        return console.error('upload failed:', err)
+      }
+      console.log('Upload successful!  Server responded with:', body)
+    }
+  )
+  const form = r.form()
+  form.append('answer', fs.createReadStream(pathJson), {
+    filename: 'answer.json'
+  })
 }
+
+sendDesafio()

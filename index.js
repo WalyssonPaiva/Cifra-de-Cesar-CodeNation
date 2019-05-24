@@ -6,7 +6,7 @@ const request = require('request')//usaremos para fazer a requisição POST e en
 
 const pathJson = path.resolve(__dirname, 'answer.json')//aqui definimos um padrão de url para mantermos o arquivo de resposta
 const iniciar = async () =>{ //inícia uma sequencia de métodos para resolver o desafio
-axios.get('https://api.codenation.dev/v1/challenge/dev-ps/generate-data?token=1138f7c271366dfb6772cd6984bc9add249108b3')
+axios.get('https://api.codenation.dev/v1/challenge/dev-ps/generate-data?token=SEU-TOKEN')
     .then(function(response){     
         criaArquivo(response.data)//cria um arquivo com o valor dentro da chave "data" do json
     })
@@ -76,7 +76,7 @@ const sendDesafio = async () => {
     'Content-Type': 'multipart/form-data' //este é o cabeçalho que usaremos para enviar o arquivo (pedido no desafio)
   }
   const r = request.post(//aqui definimos o método POST, com a url e o cabeçalho da requisição
-    { url: 'https://api.codenation.dev/v1/challenge/dev-ps/submit-solution?token=1138f7c271366dfb6772cd6984bc9add249108b3', headers },
+    { url: 'https://api.codenation.dev/v1/challenge/dev-ps/submit-solution?token=SEU-TOKEN', headers },
     function optionalCallback (err, httpResponse, body) {
       if (err) {
         return console.error('upload failed:', err)
